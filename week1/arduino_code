@@ -1,0 +1,46 @@
+int led = LED_BUILTIN;
+
+void setup() {
+  pinMode(led, OUTPUT);
+}
+
+void loop() {
+  blinkMorse("DEEPANSHU");
+  delay(3000); // Repeat delay
+}
+
+void blinkMorse(String name) {
+  for (int i = 0; i < name.length(); i++) {
+    char c = name.charAt(i);
+    blinkLetter(c);
+    delay(800); // Delay between letters
+  }
+}
+
+void blinkLetter(char letter) {
+  switch (letter) {
+    case 'D': blinkDash(); blinkDot(); blinkDot(); break;
+    case 'E': blinkDot(); break;
+    case 'P': blinkDot(); blinkDash(); blinkDash(); blinkDot(); break;
+    case 'A': blinkDot(); blinkDash(); break;
+    case 'N': blinkDash(); blinkDot(); break;
+    case 'S': blinkDot(); blinkDot(); blinkDot(); break;
+    case 'H': blinkDot(); blinkDot(); blinkDot(); blinkDot(); break;
+    case 'U': blinkDot(); blinkDot(); blinkDash(); break;
+    default: break;
+  }
+}
+
+void blinkDot() {
+  digitalWrite(led, HIGH);
+  delay(200);
+  digitalWrite(led, LOW);
+  delay(200);
+}
+
+void blinkDash() {
+  digitalWrite(led, HIGH);
+  delay(600);
+  digitalWrite(led, LOW);
+  delay(200);
+}
