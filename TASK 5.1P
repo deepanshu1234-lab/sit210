@@ -1,0 +1,29 @@
+import tkinter as tk
+from gpiozero import LED
+
+# LEDs on GPIO pins
+red = LED(2)
+green = LED(3)
+blue = LED(4)
+def control_led():
+    red.off(); green.off(); blue.off()   # turn all off
+    if choice.get() == "Red": red.on()
+    if choice.get() == "Green": green.on()
+    if choice.get() == "Blue": blue.on()
+
+def close_app():
+    red.off(); green.off(); blue.off()
+    root.destroy()
+
+root = tk.Tk()
+root.title("LED Control")
+
+choice = tk.StringVar()
+
+tk.Radiobutton(root, text="Red LED", variable=choice, value="Red", command=control_led).pack()
+tk.Radiobutton(root, text="Green LED", variable=choice, value="Green", command=control_led).pack()
+tk.Radiobutton(root, text="Blue LED", variable=choice, value="Blue", command=control_led).pack()
+
+tk.Button(root, text="Exit", command=close_app).pack()
+
+root.mainloop()
