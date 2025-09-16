@@ -1,0 +1,56 @@
+#define BUTTON_PIN 2   // Button connected to pin D2
+#define TRIG_PIN 4     // Ultrasonic TRIG pin connected to D4
+#define ECHO_PIN 3     // Ultrasonic ECHO pin connected to D3
+#define LED1 8         // LED1 connected to D8
+#define LED2 9         // LED2 connected to D9
+
+volatile bool led1State = LOW; // Stores on or off state of LED1
+
+void buttonISR() {
+  led1State = !led1State;  // flip LED1 ON to OFF
+}
+void setupPins() {
+  pinMode(BUTTON_PIN, INPUT_PULLUP); 
+  pinMode(TRIG_PIN, OUTPUT);         // TRIG pin sends ultrasonic signal
+  pinMode(ECHO_PIN, INPUT);          // ECHO pin receives signal
+  pinMode(LED1, OUTPUT);             // LED1 as output
+  pinMode(LED2, OUTPUT);             // LED2 as output
+}
+void setupInterrupts() {
+  // Whenever button is pressed or clicked it calls buttonISR() function which defines if the button is on then make it off when clicked and vice versa
+  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), buttonISR, FALLING);
+}
+void setup() {
+  Serial.begin(9600);       // Start Serial Monitor for readings and 9600 is the bourd rate
+  setupPins();              // function calling is done here to  configure pins
+  setupInterrupts();        // function calling is done here to enable interrupts
+}
+
+void loop() {
+  // 1. Update LED1 according to button state
+  digitalWrite(LED1, led1State);
+
+  // 2. Send ultrasonic signal to measure distance
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);  
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  // 3. Measure how long ECHO pin stays on (signal duration)
+  long duration = pulseIn(ECHO_PIN, HIGH);
+  // 4. Convert time into distance in cm
+  int distance = duration * 0.034 / 2; 
+  // 5. Print distance on Serial Monitor
+  Serial.print("Distance: ");
+  Serial.println(distance);
+
+  // 6. Control LED2 based on distance
+  if (distance > 0 && distance < 20) {  
+    digitalWrite(LED2, HIGH);           // when the object will  in the range of the 0 to 20 cm then the led will blink
+  } else {
+    digitalWrite(LED2, LOW);            // when the object will  in the range of the 0 to 20 cm then the led will blink
+  }
+
+  delay(200); 
+}
